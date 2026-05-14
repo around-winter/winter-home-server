@@ -1,0 +1,16 @@
+
+prebuild:
+  commands:
+    - go mod tidy
+
+build:
+  commands:
+    - go build -o server ./cmd/server
+
+start:
+  commands:
+    - ./server
+
+network:
+  port: 8080
+

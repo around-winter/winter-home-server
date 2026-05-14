@@ -1,0 +1,26 @@
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Build
+server
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
