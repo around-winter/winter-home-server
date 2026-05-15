@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"winter-home-server/internal/handlers"
+	"winter-home-server/internal/middleware"
 )
 
 // ==================== 服务器主函数 ====================
@@ -41,7 +42,11 @@ func main() {
 
 // setupRoutes 注册所有 HTTP 路由
 func setupRoutes() {
+	// 公开接口（无需认证）
 	http.HandleFunc("/", handlers.RootHandler)
 	http.HandleFunc("/health", handlers.HealthHandler)
-	http.HandleFunc("/api/test", handlers.TestHandler)
+
+	// 需要认证的接口
+	authHandler := middleware.AuthMiddleware(http.HandlerFunc(handlers.TestHandler))
+	http.Handle("/api/test", authHandler)
 }
