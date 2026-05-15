@@ -39,3 +39,32 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+func JWTAuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+
+		if authHeader == "" {
+			http.Error(w, "缺少认证信息", http.StatusUnauthorized)
+			return
+		}
+
+		parts := strings.SplitN(authHeader, " ", 2)
+		if len(parts) != 2 || parts[0] != "Bearer" {
+			http.Error(w, "认证格式错误，请使用: Bearer <token>", http.StatusUnauthorized)
+			return
+		}
+
+		token := parts[1]
+		claims, err := ValidateToken(token)
+		if err != nil {
+			http.Error(w, "Token 无效: "+err.Error(), http.StatusUnauthorized)
+			return
+		}
+
+		r.Header.Set("X-User-ID", string(rune(claims.UserID)))
+		r.Header.Set("X-Username", claims.Username)
+
+		next.ServeHTTP(w, r)
+	})
+}

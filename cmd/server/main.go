@@ -46,7 +46,11 @@ func setupRoutes() {
 	http.HandleFunc("/", handlers.RootHandler)
 	http.HandleFunc("/health", handlers.HealthHandler)
 
+	// 用户认证接口（无需认证）
+	http.HandleFunc("/api/register", handlers.RegisterHandler)
+	http.HandleFunc("/api/login", handlers.LoginHandler)
+
 	// 需要认证的接口
-	authHandler := middleware.AuthMiddleware(http.HandlerFunc(handlers.TestHandler))
+	authHandler := middleware.JWTAuthMiddleware(http.HandlerFunc(handlers.TestHandler))
 	http.Handle("/api/test", authHandler)
 }
